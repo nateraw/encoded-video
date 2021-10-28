@@ -10,6 +10,18 @@ from iopath.common.file_io import g_pathmgr
 
 logger = logging.getLogger(__name__)
 
+av.logging.set_level(av.logging.ERROR)
+if not hasattr(av.video.frame.VideoFrame, "pict_type"):
+    av = ImportError(
+        """\
+Your version of PyAV is too old for the necessary video operations in torchvision.
+If you are on Python 3.5, you will have to build from source (the conda-forge
+packages are not up-to-date).  See
+https://github.com/mikeboers/PyAV#installation for instructions on how to
+install PyAV on your system.
+"""
+    )
+
 
 def thwc_to_cthw(data: np.ndarray) -> np.ndarray:
     """
