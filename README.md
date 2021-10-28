@@ -1,5 +1,7 @@
 # encoded-video
 
+<a href="https://colab.research.google.com/github/nateraw/encoded-video/blob/main/examples/encoded_video_demo.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
 Utilities for serializing/deserializing videos w/ `pyav` and `numpy`. 
 
 ## Purpose
