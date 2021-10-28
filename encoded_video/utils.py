@@ -34,9 +34,9 @@ def write_video(
         audio_codec (str): the name of the audio codec, i.e. "mp3", "aac", etc.
         audio_options (Dict): dictionary containing options to be passed into the PyAV audio stream
     """
-    import torch
-    video_array = torch.as_tensor(video_array, dtype=torch.uint8).numpy()
-    # video_array = video_array.astype(np.uint8)
+    # import torch
+    # video_array = torch.as_tensor(video_array, dtype=torch.uint8).numpy()
+    video_array = video_array.astype(np.uint8)
 
     # PyAV does not support floating point numbers with decimal point
     # and will throw OverflowException in case this is not the case
