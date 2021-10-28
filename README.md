@@ -27,11 +27,13 @@ import numpy as np
 from encoded_video import bytes_to_video, read_video, video_to_bytes
 
 vid = read_video('archery.mp4')
+video_arr = vid['video']  # (T, H, W, C)
+audio_arr = vid['audio']  # (S,)
 
 out_bytes = video_to_bytes(
-    vid['video'],
+    video_arr,
     fps=30,
-    audio_array=np.expand_dims(vid['audio'], 0),
+    audio_array=np.expand_dims(audio_arr, 0),
     audio_fps=vid['audio_fps'],
     audio_codec='aac'
 )
