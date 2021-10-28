@@ -19,6 +19,8 @@ pip install encoded-video
 ## Usage
 
 ```python
+import numpy as np
+from encoded_video import bytes_to_video, read_video, video_to_bytes
 
 vid = read_video('archery.mp4')
 
