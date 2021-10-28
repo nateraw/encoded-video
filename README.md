@@ -2,13 +2,15 @@
 
 Utilities for serializing/deserializing videos w/ `pyav` and `numpy`. 
 
-This is more or less a `torch`-less version of `EncodedVideo` from [`pytorchvideo`](https://github.com/facebookresearch/pytorchvideo).
+## Purpose
 
-The purpose of this package is to:
 1. Have a helpful API for working with videos
 2. Liberate myself from relying on `torch` or `tensorflow` to do the above
 3. Serialize/deserialize videos without writing directly to file (helpful for sending/recieving videos over APIs)
 
+## Acknowledgments
+
+This is more or less a `torch`-less version of `EncodedVideo` from [`pytorchvideo`](https://github.com/facebookresearch/pytorchvideo).
 
 ## Setup
 
