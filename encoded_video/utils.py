@@ -52,16 +52,16 @@ def write_video(
 
         if audio_array is not None:
             audio_format_dtypes = {
-                'dbl': '<f8',
-                'dblp': '<f8',
-                'flt': '<f4',
-                'fltp': '<f4',
-                's16': '<i2',
-                's16p': '<i2',
-                's32': '<i4',
-                's32p': '<i4',
-                'u8': 'u1',
-                'u8p': 'u1',
+                "dbl": "<f8",
+                "dblp": "<f8",
+                "flt": "<f4",
+                "fltp": "<f4",
+                "s16": "<i2",
+                "s16p": "<i2",
+                "s32": "<i4",
+                "s32p": "<i4",
+                "u8": "u1",
+                "u8p": "u1",
             }
             a_stream = container.add_stream(audio_codec, rate=audio_fps)
             a_stream.options = audio_options or {}
@@ -73,7 +73,9 @@ def write_video(
             format_dtype = np.dtype(audio_format_dtypes[audio_sample_fmt])
             audio_array = audio_array.astype(format_dtype)
 
-            frame = av.AudioFrame.from_ndarray(audio_array, format=audio_sample_fmt, layout=audio_layout)
+            frame = av.AudioFrame.from_ndarray(
+                audio_array, format=audio_sample_fmt, layout=audio_layout
+            )
 
             frame.sample_rate = audio_fps
 
@@ -125,10 +127,20 @@ def video_to_bytes(
     out_file = BytesIO(bytes_mp4)
 
     # Add dummy file name to stream, as write_video will be looking for it
-    out_file.name = 'out.mp4'
+    out_file.name = "out.mp4"
 
     # writes to out_file
-    write_video(out_file, video_array, fps, video_codec, options, audio_array, audio_fps, audio_codec, audio_options)
+    write_video(
+        out_file,
+        video_array,
+        fps,
+        video_codec,
+        options,
+        audio_array,
+        audio_fps,
+        audio_codec,
+        audio_options,
+    )
 
     # Return the bytes
     return out_file.getvalue()
@@ -138,14 +150,16 @@ def bytes_to_video(bpayload) -> Dict[str, Any]:
     """Take in memory video bytes and return a video clip dict containing frames, audio, and metadata"""
     vid = EncodedVideo(BytesIO(bpayload))
     clip = vid.get_clip(0, vid.duration)
-    clip['duration'] = vid.duration
-    clip['fps'] = float(vid._container.streams.video[0].average_rate)
-    clip['audio_fps'] = None if not vid._has_audio else vid._container.streams.audio[0].sample_rate
+    clip["duration"] = vid.duration
+    clip["fps"] = float(vid._container.streams.video[0].average_rate)
+    clip["audio_fps"] = (
+        None if not vid._has_audio else vid._container.streams.audio[0].sample_rate
+    )
     return clip
 
 
 def read_video(filepath):
     """Read a video from file"""
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         bpayload = f.read()
     return bytes_to_video(bpayload)

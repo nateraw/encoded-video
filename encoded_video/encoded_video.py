@@ -127,17 +127,27 @@ class EncodedVideo(object):
         # Take the largest duration of either video or duration stream.
         if audio_duration is not None and video_duration is not None:
             self._duration = max(
-                pts_to_secs(video_duration, self._video_time_base, self._video_start_pts),
-                pts_to_secs(audio_duration, self._audio_time_base, self._audio_start_pts),
+                pts_to_secs(
+                    video_duration, self._video_time_base, self._video_start_pts
+                ),
+                pts_to_secs(
+                    audio_duration, self._audio_time_base, self._audio_start_pts
+                ),
             )
         elif video_duration is not None:
-            self._duration = pts_to_secs(video_duration, self._video_time_base, self._video_start_pts)
+            self._duration = pts_to_secs(
+                video_duration, self._video_time_base, self._video_start_pts
+            )
 
         elif audio_duration is not None:
-            self._duration = pts_to_secs(audio_duration, self._audio_time_base, self._audio_start_pts)
+            self._duration = pts_to_secs(
+                audio_duration, self._audio_time_base, self._audio_start_pts
+            )
 
     @classmethod
-    def from_path(cls, file_path: str, decode_audio: bool = True, decoder: str = "pyav"):
+    def from_path(
+        cls, file_path: str, decode_audio: bool = True, decoder: str = "pyav"
+    ):
         """
         Fetches the given video path using PathManager (allowing remote uris to be
         fetched) and constructs the EncodedVideo object.
@@ -167,7 +177,9 @@ class EncodedVideo(object):
         """
         return self._duration
 
-    def get_clip(self, start_sec: float, end_sec: float) -> Dict[str, Optional[np.ndarray]]:
+    def get_clip(
+        self, start_sec: float, end_sec: float
+    ) -> Dict[str, Optional[np.ndarray]]:
         """
         Retrieves frames from the encoded video at the specified start and end times
         in seconds (the video always starts at 0 seconds).
@@ -195,16 +207,32 @@ class EncodedVideo(object):
 
         video_frames = None
         if self._video is not None:
-            video_start_pts = secs_to_pts(start_sec, self._video_time_base, self._video_start_pts)
-            video_end_pts = secs_to_pts(end_sec, self._video_time_base, self._video_start_pts)
+            video_start_pts = secs_to_pts(
+                start_sec, self._video_time_base, self._video_start_pts
+            )
+            video_end_pts = secs_to_pts(
+                end_sec, self._video_time_base, self._video_start_pts
+            )
 
-            video_frames = [f for f, pts in self._video if pts >= video_start_pts and pts <= video_end_pts]
+            video_frames = [
+                f
+                for f, pts in self._video
+                if pts >= video_start_pts and pts <= video_end_pts
+            ]
 
         audio_samples = None
         if self._has_audio and self._audio is not None:
-            audio_start_pts = secs_to_pts(start_sec, self._audio_time_base, self._audio_start_pts)
-            audio_end_pts = secs_to_pts(end_sec, self._audio_time_base, self._audio_start_pts)
-            audio_samples = [f for f, pts in self._audio if pts >= audio_start_pts and pts <= audio_end_pts]
+            audio_start_pts = secs_to_pts(
+                start_sec, self._audio_time_base, self._audio_start_pts
+            )
+            audio_end_pts = secs_to_pts(
+                end_sec, self._audio_time_base, self._audio_start_pts
+            )
+            audio_samples = [
+                f
+                for f, pts in self._audio
+                if pts >= audio_start_pts and pts <= audio_end_pts
+            ]
             audio_samples = np.concatenate(audio_samples, axis=0)
             audio_samples = audio_samples.astype(np.float32)
 
@@ -231,7 +259,9 @@ class EncodedVideo(object):
         if self._container is not None:
             self._container.close()
 
-    def _pyav_decode_video(self, start_secs: float = 0.0, end_secs: float = math.inf) -> float:
+    def _pyav_decode_video(
+        self, start_secs: float = 0.0, end_secs: float = math.inf
+    ) -> float:
         """
         Selectively decodes a video between start_pts and end_pts in time units of the
         self._video's timebase.
@@ -247,12 +277,17 @@ class EncodedVideo(object):
                 {"video": 0},
             )
             if len(pyav_video_frames) > 0:
-                video_and_pts = [(frame.to_rgb().to_ndarray(), frame.pts) for frame in pyav_video_frames]
+                video_and_pts = [
+                    (frame.to_rgb().to_ndarray(), frame.pts)
+                    for frame in pyav_video_frames
+                ]
 
             if self._has_audio:
                 pyav_audio_frames, _ = _pyav_decode_stream(
                     self._container,
-                    secs_to_pts(start_secs, self._audio_time_base, self._audio_start_pts),
+                    secs_to_pts(
+                        start_secs, self._audio_time_base, self._audio_start_pts
+                    ),
                     secs_to_pts(end_secs, self._audio_time_base, self._audio_start_pts),
                     self._container.streams.audio[0],
                     {"audio": 0},
