@@ -87,7 +87,7 @@ def write_video(
 
         for img in video_array:
             frame = av.VideoFrame.from_ndarray(img, format="rgb24")
-            frame.pict_type = "NONE"
+            frame.pict_type = 0
             for packet in stream.encode(frame):
                 container.mux(packet)
 
