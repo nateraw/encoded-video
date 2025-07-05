@@ -6,7 +6,7 @@ with open("requirements.txt", "r") as f:
 setup(
     name='encoded-video',
     packages=find_packages(exclude=['examples']),
-    version='0.0.2',
+    version='0.0.3',
     # license=, # TODO - codebase heavily draws from pytorchvideo. need to issue license correctly.
     description='Video utilities',
     author='Nathan Raw',
